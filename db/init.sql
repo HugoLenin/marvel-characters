@@ -1,7 +1,7 @@
 -- =========================================================
 --  Base de datos del taller: API de Personajes Marvel
 --  Se ejecuta automáticamente la PRIMERA vez que se crea el
---  contenedor. Para reiniciar: docker compose down -v
+--  contenedor. Para reiniciar: docker compose down -v e  
 -- =========================================================
 
 CREATE TABLE teams (
