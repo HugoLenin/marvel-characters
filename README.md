@@ -1,7 +1,7 @@
 # integrantes:
 
-Hugo Guzman - 202415683
-Nicolas - 
+- Hugo Guzman - 202415683
+- Nicolas - 
 
 
 # Base de datos — Taller API de Personajes Marvel
