@@ -1,3 +1,9 @@
+# integrantes:
+
+Hugo Guzman - 202415683
+Nicolas - 
+
+
 # Base de datos — Taller API de Personajes Marvel
 
 Este repositorio **solo** contiene la base de datos PostgreSQL con datos de prueba.
