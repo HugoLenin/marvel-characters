@@ -5,6 +5,8 @@ import { Character } from './character.entity.js';
 import { Team } from '../teams/team.entity.js';
 import { CreateCharacterDto } from './dto/create-character.dto.js';
 import { FilterCharactersDto } from './dto/filter-characters.dto.js';
+import { UpdateCharacterDto } from './dto/update-character.dto.js';
+import { CharacterStatus } from './character-status.enum.js';
 
 @Injectable()
 export class CharactersService {
@@ -43,6 +45,44 @@ export class CharactersService {
     const character = this.charactersRepository.create(dto);
     const saved = await this.charactersRepository.save(character);
     return this.findOne(saved.id);
+  }
+
+  async update(id: number, dto: UpdateCharacterDto): Promise<Character> {
+    const character = await this.findOne(id);
+    await this.ensureUniqueAlias(dto.alias, id);
+    this.ensureValidTransition(character.status, dto.status);
+    const teamId = dto.team_id ?? null;
+    if (teamId !== null && teamId !== character.team_id) {
+      await this.validateTeam(teamId);
+    }
+    await this.charactersRepository.update(id, {
+      real_name: dto.real_name,
+      alias: dto.alias,
+      main_power: dto.main_power,
+      power_level: dto.power_level,
+      status: dto.status,
+      is_villain: dto.is_villain,
+      team_id: teamId,
+    });
+    return this.findOne(id);
+  }
+
+  async updateStatus(id: number, status: CharacterStatus): Promise<Character> {
+    const character = await this.findOne(id);
+    this.ensureValidTransition(character.status, status);
+    await this.charactersRepository.update(id, { status });
+    return this.findOne(id);
+  }
+
+  async remove(id: number): Promise<void> {
+    await this.findOne(id);
+    await this.charactersRepository.delete(id);
+  }
+
+  private ensureValidTransition(current: CharacterStatus, next: CharacterStatus): void {
+    if (current === CharacterStatus.RETIRED && next === CharacterStatus.INJURED) {
+      throw new BadRequestException('A RETIRED character cannot change to INJURED');
+    }
   }
 
   private async ensureUniqueAlias(alias: string, excludeId?: number): Promise<void> {
